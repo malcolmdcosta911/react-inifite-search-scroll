@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-const url = "http://openlibrary.org/search.json";
+const url = import.meta.env.VITE_SEARCH_API;
 
 const useBookSearch = (query, pageNo) => {
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(false);
     const [books, setBooks] = useState([]);
 
@@ -13,7 +13,8 @@ const useBookSearch = (query, pageNo) => {
     }, [query]);
 
     useEffect(() => {
-        const controller = new AbortController(); //abort prev search so data doesnt show up in new
+        const controller = new AbortController();
+        //abort prev search so old search data doesnt show up in new since promise not callled
         const signal = controller.signal;
         (async () => {
             if (!query) return;
@@ -48,7 +49,7 @@ const useBookSearch = (query, pageNo) => {
                 if (error.name === "AbortError") return;
                 setError(true);
             } finally {
-                 setLoading(false);
+                setLoading(false);
             }
         })();
 
